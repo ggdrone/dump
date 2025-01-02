@@ -1,64 +1,32 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+/* A simple program to learn
+   more C and using ncurses */
 
-// Function for reading fan speed from file.
-// Don't have CPU-fan sensor on this machine
-/*int readFanSpeed()
-{
-  const char *fanspeedfile = "WHERE IS THE FILE?";
-  FILE *fp                 = fopen(fanspeedfile, "r");
-
-  if (fp == NULL)
-  {
-    printf("Error: could not open file %s", fanspeedfile);
-    return 1;
-  }
-
-  // Reading the temperature value from WHERE IS THE FILE?
-  char buffer[256];
-  if (fgets(buffer, sizeof(buffer), fp))
-  {
-    printf("The fan is currently spinning at: %.2f RPM", );
-  }
-  else
-  {
-    printf("Error: could not read from file %s\n", fanspeedfile);
-    fclose(fp);
-    return 1;
-  } 
-
-  // Close the file.
-  fclose(fp);
-  return 0; 
- } */
+#include <ncurses.h>
 
 // Function for reading CPU temperatur from file.
 int readTemp()
 {
-  const char *tempfile = "/sys/class/hwmon/hwmon1/temp1_input";
-  FILE *fp             = fopen(tempfile, "r");
+  const char *TEMPFILE = "/sys/class/hwmon/hwmon1/temp1_input";
+  FILE *fp             = fopen(TEMPFILE, "r");
 
   if (fp == NULL)
   {
-    printf("Error: could not open file %s", tempfile);
-    return 1;
+    // TO DO: add error message
+    return -1;
   }
 
   // Reading the temperature value from temp1_input
   char buffer[256];
   if (fgets(buffer, sizeof(buffer), fp))
   {
-    // Converting from millidegrees to Celcius.
-    int temp_millidegrees  = atoi(buffer); // atoi() string -> int
-    float temp_celsius     = temp_millidegrees / 1000.0;
-    printf("CPU temperature is currently: %.2f *C\n", temp_celsius);
+    fclose(fp);
+    return atoi(buffer) / 1000.0; // atoi converts str to int
   }
   else
   {
-    printf("Error: could not read from file %s\n", tempfile);
+    // TO DO: add error message
     fclose(fp);
-    return 1;
+    return -1;
   } 
 
   // Close the file.
@@ -66,12 +34,50 @@ int readTemp()
   return 0;
 }
 
+// Function for printing temperature to screen
+float printTemp(int x, int y)
+{
+  float temp = readTemp(); // Get the temperature.
+  move(x, y); // Moves cursor to determined pos.
+
+  if (temp < 0)
+  {
+    printw("ERROR: could not read temperature! Wrong file?");
+  }
+  else
+  {
+    printw("CPU temperatur is: %.2f *C", temp);
+  }
+
+  refresh(); // Refresh screen to update content.
+  return 0;
+}
+
 int main(void)
 {
-  while (1)
+  initscr();
+  keypad(stdscr, TRUE); // True means to enable.
+  noecho();
+  nodelay(stdscr, TRUE); // Black magic...
+
+  // Variables for closing program
+  // and setting location of text
+  int key = 0;
+  int x   = 2;
+  int y   = 3;
+
+  while (key != 'q')
   {
-    int cpu_temp = readTemp();
-    sleep(5);
+    clear();
+    move(0, 0); // Moves cursor to top left 0, 0.
+    printw("Press 'Q' to quit.");
+
+    printTemp(x, y);
+
+    sleep(1);
+    key = getch(); // Get user input.
   }
+  
+  endwin();
   return 0;
 }
