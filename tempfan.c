@@ -41,7 +41,7 @@ float printTemp(int x, int y)
   }
   else
   {
-    printw("CPU temperatur is: %.2f *C", temp);
+    printw("CPU temperature is: %.2f *C", temp);
   }
 
   refresh(); // Refresh screen to update content.
@@ -64,7 +64,7 @@ int main(void)
   while (key != 'q')
   {
     clear();
-    move(0, 0); // Moves cursor to top left 0, 0.
+    move(0, 0);
     printw("Press 'Q' to quit.");
 
     printTemp(x, y);
