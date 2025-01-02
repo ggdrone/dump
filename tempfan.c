@@ -15,7 +15,6 @@ int readTemp()
     return -1;
   }
 
-  // Reading the temperature value from temp1_input
   char buffer[256];
   if (fgets(buffer, sizeof(buffer), fp))
   {
@@ -28,10 +27,6 @@ int readTemp()
     fclose(fp);
     return -1;
   } 
-
-  // Close the file.
-  fclose(fp);
-  return 0;
 }
 
 // Function for printing temperature to screen
