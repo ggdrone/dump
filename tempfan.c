@@ -58,7 +58,7 @@ void drawBorderAndMessage(int x, int y, const char *message)
 
   // Colors, colors, colors...
   attron(COLOR_PAIR(1));
-  // Draw border with message in it .
+  // Draw border with message in it (top).
   move(0, 0);
   for (int i = 0; i < 7; i++)
   {
@@ -72,8 +72,19 @@ void drawBorderAndMessage(int x, int y, const char *message)
   {
     addch('#');
   }
+
+  int bx = 1; // Variable for left right border.
+  // Draw left right border.
+  for (int i = 0; i < 3; i++)
+  {
+    move(bx, 0);
+    addch('#');
+    move(bx, width-1);
+    addch('#');
+    bx++;
+  }
   
-  //Draw bottom border.
+  // Draw bottom border.
   move(4, 0);
   for (int i = 0; i < width; i++)
   {
